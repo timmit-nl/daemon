@@ -1,5 +1,5 @@
 {
-    "name": "onedal/daemon",
+    "name": "timmit/daemon",
     "description": "Lightweight utility and helper classes for CLI applications",
     "keywords": [
         "cli",
@@ -17,6 +17,11 @@
             "name": "oNeDaL",
             "email": "onedal@voodoo.technology",
             "role": "developer"
+        },
+        {
+            "name": "Tim Schoondergang",
+            "email": "Tim.Schoondergang@TiMMiT.nl",
+            "homepage": "http://www.TiMMiT.nl"
         }
     ],
     "require": {
@@ -26,7 +31,7 @@
     },
     "autoload": {
         "psr-4": {
-            "oNeDaL\\": "src/"
+            "TiMMiT": "src/TiMMiT/"
         }
     }
 }
