@@ -15,7 +15,7 @@ composer.json configuration is:
 ```
 {
     "require": {
-        "onedal/daemon": "dev-master"
+        "timmit/daemon": "~1.0.0"
     }
 }
 ```
@@ -32,7 +32,7 @@ Tests if a daemon is currently running or not. Returns true or false:
 
 ```php
 <?php
-use oNeDaL\Daemon;
+use TiMMiT\Daemon;
 if (Daemon::isRunning('/path/to/process.pid')) {
     echo "daemon is running.\n";
 } else {
@@ -47,7 +47,7 @@ contain `pid` as the path to the PID file:
 
 ```php
 <?php
-use oNeDaL\Daemon;
+use TiMMiT\Daemon;
 if (Daemon::isRunning('/path/to/process.pid')) {
     echo "daemon is already running.\n";
 } else {
@@ -78,7 +78,7 @@ Kill a daemonized process:
 
 ```php
 <?php
-use oNeDaL\Daemon;
+use TiMMiT\Daemon;
 
 if (Daemon::isRunning('/path/to/process.pid')) {
     echo "killing running daemon ...\n";
@@ -109,9 +109,12 @@ blog post on [daemonizing a PHP CLI script on a POSIX system][post].
 
 - Nofriandi Ramenta <nramenta@gmail.com>: autor of original source code (you 
     can found it [here][clio])
+- 1dal <https://github.com/1dal>: autor of first fork source code (you 
+    can found it [here][clio])
 
 [Composer]: http://getcomposer.org/
 [MIT]: http://en.wikipedia.org/wiki/MIT_License
 [post]: http://andytson.com/blog/2010/05/daemonising-a-php-cli-script-on-a-posix-system/
 [clio]: https://github.com/nramenta/clio
+[onedal]: https://github.com/1dal/Daemon
 
