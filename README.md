@@ -109,7 +109,7 @@ blog post on [daemonizing a PHP CLI script on a POSIX system][post].
 
 - Nofriandi Ramenta <nramenta@gmail.com>: autor of original source code (you 
     can found it [here][clio])
-- 1dal <https://github.com/1dal>: autor of first fork source code (you 
+- oNeDaL <onedal@voodoo.technology>: autor of first fork source code (you 
     can found it [here][onedal])
 
 [Composer]: http://getcomposer.org/
