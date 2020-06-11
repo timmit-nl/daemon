@@ -12,7 +12,7 @@ class Daemon {
 	 * @param array $options Set of options
 	 * @param callable $callable Callback to daemonize
 	 *
-	 * @return bool True on success, throws an Exception otherwise
+	 * @return void True on success, throws an Exception otherwise
 	 */
 	public static function work(array $options, callable $callable) {
 
@@ -82,7 +82,7 @@ class Daemon {
 	 *
 	 * @param string $file   Daemon PID file
 	 *
-	 * @return bool True if the daemon is still running, false otherwise
+	 * @return boolean True if the daemon is still running, false otherwise
 	 */
 	public static function isRunning($file) {
 		if (!is_readable($file)) {
