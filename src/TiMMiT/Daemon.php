@@ -51,9 +51,15 @@ class Daemon {
 			throw new \Exception('failed to setsid');
 		}
 
-		fclose(STDIN);
-		fclose(STDOUT);
-		fclose(STDERR);
+		if(defined('STDIN') && is_resource(STDIN)){
+			fclose(STDIN);
+		}
+		if(defined('STDOUT') && is_resource(STDOUT)){
+			fclose(STDOUT);
+		}
+		if(defined('STDERR') && is_resource(STDERR)){
+			fclose(STDERR);
+		}
 
 		if (!($stdin  = fopen($options['stdin'], 'r'))) {
 			throw new \Exception('failed to open STDIN ' . $options['stdin']);
