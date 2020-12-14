@@ -1,0 +1,16 @@
+parameters:
+	level: 5
+	parallel:
+		maximumNumberOfProcesses: 4
+		minimumNumberOfJobsPerProcess: 2
+		jobSize: 2
+		processTimeout: 120.0
+	fileExtensions:
+		- php
+	paths:
+		- ./src
+	excludes_analyse:
+		- ./app/tmp/*
+	dynamicConstantNames:
+		- NONE
+	treatPhpDocTypesAsCertain: false
