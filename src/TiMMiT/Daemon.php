@@ -2,7 +2,9 @@
 
 namespace TiMMiT;
 
-
+/**
+ * Daemon class.
+ */
 class Daemon
 {
     /**
