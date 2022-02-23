@@ -19,7 +19,7 @@ class Daemon
     /**
      * Daemonize a callback
      *
-     * @param array $options Set of options
+     * @param array  $options Set of options
      * @param callable $callable Callback to daemonize
      *
      * @return void on success, throws an Exception otherwise
@@ -98,7 +98,7 @@ class Daemon
         pcntl_signal(SIGTSTP, SIG_IGN);
         pcntl_signal(SIGTTOU, SIG_IGN);
         pcntl_signal(SIGTTIN, SIG_IGN);
-        pcntl_signal(SIGHUP,  SIG_IGN);
+        pcntl_signal(SIGHUP, SIG_IGN);
 
         call_user_func($callable, $stdin, $stdout, $stderr);
     }
@@ -106,7 +106,7 @@ class Daemon
     /**
      * Checks whether a daemon process specified by its PID file is running.
      *
-     * @param string $file   Daemon PID file
+     * @param string $file Daemon PID file
      *
      * @return bool True if the daemon is still running, false otherwise
      *
@@ -141,7 +141,6 @@ class Daemon
      * @return bool TRUE on success, FALSE otherwise
      *
      * @throws \Exception On error.
-     *
      */
     public static function kill(string $file, bool $delete = false, int $signal = SIGTERM): bool
     {
