@@ -9,8 +9,6 @@ parameters:
 		- php
 	paths:
 		- ./src
-	excludes_analyse:
-		- ./app/tmp/*
 	dynamicConstantNames:
 		- NONE
 	treatPhpDocTypesAsCertain: false
