@@ -68,13 +68,22 @@ class Daemon
         if (!($stdin  = fopen($options['stdin'], 'r'))) {
             throw new \Exception('failed to open STDIN ' . $options['stdin']);
         }
+        if (!defined('DAEMON_STDIN')) {
+            define('DAEMON_STDIN', $stdin);
+        }
 
         if (!($stdout = fopen($options['stdout'], 'w'))) {
             throw new \Exception('failed to open STDOUT ' . $options['stdout']);
         }
+        if (!defined('DAEMON_STDOUT')) {
+            define('DAEMON_STDOUT', $stdout);
+        }
 
         if (!($stderr = fopen($options['stderr'], 'w'))) {
             throw new \Exception('failed to open STDERR ' . $options['stderr']);
+        }
+        if (!defined('DAEMON_STDERR')) {
+            define('DAEMON_STDERR', $stderr);
         }
 
         pcntl_signal(SIGTSTP, SIG_IGN);
