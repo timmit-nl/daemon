@@ -23,8 +23,8 @@ class Daemon
      * @param callable $callable Callback to daemonize
      *
      * @return void on success, throws an Exception otherwise
-     * 
-     * @throws \Exception if there is an error
+     *
+     * @throws \Exception If there is an error.
      */
     public static function work(array $options, callable $callable): void
     {
@@ -109,8 +109,8 @@ class Daemon
      * @param string $file   Daemon PID file
      *
      * @return bool True if the daemon is still running, false otherwise
-     * 
-     * @throws \Exception if pid file is not readable
+     *
+     * @throws \Exception If pid file is not readable.
      */
     public static function isRunning(string $file): bool
     {
@@ -140,7 +140,7 @@ class Daemon
      * @link http://php.net/manual/en/pcntl.constants.php PCNTL signals
      * @return bool TRUE on success, FALSE otherwise
      *
-     * @throws \Exception on error
+     * @throws \Exception On error.
      *
      */
     public static function kill(string $file, bool $delete = false, int $signal = SIGTERM): bool
