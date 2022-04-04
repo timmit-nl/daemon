@@ -28,8 +28,8 @@
         "php": ">=5.4",
         "ext-pcntl": "*",
         "ext-posix": "*",
-        "phpstan/phpstan": "^0.12.25",
-        "phpstan/phpstan-strict-rules": "^0.12.5",
+        "phpstan/phpstan": ">=0.12.25",
+        "phpstan/phpstan-strict-rules": ">=0.12.5",
         "sweetstackdigital/php-docblock-checker": "~1.10.6"
     },
     "autoload": {

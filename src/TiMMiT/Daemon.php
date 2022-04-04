@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * A very simple class for using Daemons.
+ *
+ * PHP version 7.4+
+ *
+ * @package TiMMiT/Daemon
+ * @author  Tim Schoondergang <tim.schoondergang@TiMMiT.nl>
+ */
+
 namespace TiMMiT;
 
 /**
@@ -10,14 +19,14 @@ class Daemon
     /**
      * Daemonize a callback
      *
-     * @throws \Exception
-     *
-     * @param array $options Set of options
+     * @param array  $options  Set of options
      * @param callable $callable Callback to daemonize
      *
-     * @return void True on success, throws an Exception otherwise
+     * @return void on success, throws an Exception otherwise
+     *
+     * @throws \Exception If there is an error.
      */
-    public static function work(array $options, callable $callable)
+    public static function work(array $options, callable $callable): void
     {
 
         if (!isset($options['pid'])) {
@@ -68,19 +77,28 @@ class Daemon
         if (!($stdin  = fopen($options['stdin'], 'r'))) {
             throw new \Exception('failed to open STDIN ' . $options['stdin']);
         }
+        if (!defined('DAEMON_STDIN')) {
+            define('DAEMON_STDIN', $stdin);
+        }
 
         if (!($stdout = fopen($options['stdout'], 'w'))) {
             throw new \Exception('failed to open STDOUT ' . $options['stdout']);
+        }
+        if (!defined('DAEMON_STDOUT')) {
+            define('DAEMON_STDOUT', $stdout);
         }
 
         if (!($stderr = fopen($options['stderr'], 'w'))) {
             throw new \Exception('failed to open STDERR ' . $options['stderr']);
         }
+        if (!defined('DAEMON_STDERR')) {
+            define('DAEMON_STDERR', $stderr);
+        }
 
         pcntl_signal(SIGTSTP, SIG_IGN);
         pcntl_signal(SIGTTOU, SIG_IGN);
         pcntl_signal(SIGTTIN, SIG_IGN);
-        pcntl_signal(SIGHUP,  SIG_IGN);
+        pcntl_signal(SIGHUP, SIG_IGN);
 
         call_user_func($callable, $stdin, $stdout, $stderr);
     }
@@ -88,13 +106,13 @@ class Daemon
     /**
      * Checks whether a daemon process specified by its PID file is running.
      *
-     * @throws \Exception
+     * @param string $file Daemon PID file
      *
-     * @param string $file   Daemon PID file
+     * @return bool True if the daemon is still running, false otherwise
      *
-     * @return boolean True if the daemon is still running, false otherwise
+     * @throws \Exception If pid file is not readable.
      */
-    public static function isRunning($file)
+    public static function isRunning(string $file): bool
     {
         if (!is_readable($file)) {
             return false;
@@ -115,16 +133,16 @@ class Daemon
     /**
      * Kills a daemon process specified by its PID file.
      *
-     * @throws \Exception
-     *
      * @param string $file   Daemon PID file
      * @param bool   $delete Flag to delete PID file after killing
-     * @param integer $signal Signal
+     * @param int $signal Signal
      *
      * @link http://php.net/manual/en/pcntl.constants.php PCNTL signals
      * @return bool TRUE on success, FALSE otherwise
+     *
+     * @throws \Exception On error.
      */
-    public static function kill($file, $delete = false, $signal = SIGTERM)
+    public static function kill(string $file, bool $delete = false, int $signal = SIGTERM): bool
     {
         if (!is_readable($file)) {
             throw new \Exception('unreadable pid file ' . $file);
