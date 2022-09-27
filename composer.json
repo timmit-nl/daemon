@@ -30,7 +30,7 @@
         "ext-posix": "*",
         "phpstan/phpstan": ">=0.12.25",
         "phpstan/phpstan-strict-rules": ">=0.12.5",
-        "sweetstackdigital/php-docblock-checker": "~1.10.6"
+        "timmit/php-docblock-checker": "^1.11"
     },
     "autoload": {
         "psr-4": {
