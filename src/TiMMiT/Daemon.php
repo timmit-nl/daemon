@@ -19,7 +19,7 @@ class Daemon
     /**
      * Daemonize a callback
      *
-     * @param string[] $options Set of options
+     * @param string[]  $options Set of options
      * @param callable $callable Callback to daemonize
      *
      * @return void on success, throws an Exception otherwise
