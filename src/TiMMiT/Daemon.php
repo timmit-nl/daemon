@@ -64,13 +64,13 @@ class Daemon
             throw new \Exception('failed to setsid');
         }
 
-        if (defined('STDIN') && is_resource(STDIN)) {
+        if (defined('STDIN') && 'resource' === gettype(STDIN)) {
             fclose(STDIN);
         }
-        if (defined('STDOUT') && is_resource(STDOUT)) {
+        if (defined('STDOUT') && 'resource' === gettype(STDOUT)) {
             fclose(STDOUT);
         }
-        if (defined('STDERR') && is_resource(STDERR)) {
+        if (defined('STDERR') && 'resource' === gettype(STDERR)) {
             fclose(STDERR);
         }
 
