@@ -1,5 +1,5 @@
 parameters:
-	level: 6
+	level: 7
 	parallel:
 		maximumNumberOfProcesses: 4
 		minimumNumberOfJobsPerProcess: 2
@@ -11,4 +11,4 @@ parameters:
 		- ./src
 	dynamicConstantNames:
 		- NONE
-	treatPhpDocTypesAsCertain: false
+	treatPhpDocTypesAsCertain: true
