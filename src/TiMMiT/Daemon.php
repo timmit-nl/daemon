@@ -3,11 +3,13 @@
 /**
  * A very simple class for using Daemons.
  *
- * PHP version 7.4+
+ * PHP version 8.0+
  *
  * @package TiMMiT/Daemon
  * @author  Tim Schoondergang <tim.schoondergang@TiMMiT.nl>
  */
+
+declare(strict_types=1);
 
 namespace TiMMiT;
 
@@ -39,7 +41,7 @@ class Daemon
             'stderr' => 'php://stdout',
         );
 
-        if (($lock = @fopen($options['pid'], 'c+')) === false) {
+        if (false === ($lock = @fopen($options['pid'], 'c+'))) {
             throw new \Exception('unable to open pid file ' . $options['pid']);
         }
 
@@ -60,17 +62,17 @@ class Daemon
                 return;
         }
 
-        if (posix_setsid() === -1) {
+        if (-1 === posix_setsid()) {
             throw new \Exception('failed to setsid');
         }
 
-        if (defined('STDIN') && is_resource(STDIN)) {
+        if (defined('STDIN') && 'resource' === gettype(STDIN)) {
             fclose(STDIN);
         }
-        if (defined('STDOUT') && is_resource(STDOUT)) {
+        if (defined('STDOUT') && 'resource' === gettype(STDOUT)) {
             fclose(STDOUT);
         }
-        if (defined('STDERR') && is_resource(STDERR)) {
+        if (defined('STDERR') && 'resource' === gettype(STDERR)) {
             fclose(STDERR);
         }
 
@@ -118,7 +120,7 @@ class Daemon
             return false;
         }
 
-        if (($lock = @fopen($file, 'c+')) === false) {
+        if (false === ($lock = @fopen($file, 'c+'))) {
             throw new \Exception('unable to open pid file ' . $file);
         }
 
@@ -158,7 +160,7 @@ class Daemon
         }
 
         $pid = fgets($lock);
-        if ($pid !== false) {
+        if (false !== $pid) {
             if (posix_kill((int)$pid, $signal)) {
                 if ($delete) {
                     unlink($file);
