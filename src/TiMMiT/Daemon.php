@@ -9,6 +9,8 @@
  * @author  Tim Schoondergang <tim.schoondergang@TiMMiT.nl>
  */
 
+declare(strict_types=1);
+
 namespace TiMMiT;
 
 /**
