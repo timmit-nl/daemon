@@ -30,7 +30,6 @@ class Daemon
      */
     public static function work(array $options, callable $callable): void
     {
-
         if (!isset($options['pid'])) {
             throw new \Exception('pid not specified');
         }
@@ -76,21 +75,24 @@ class Daemon
             fclose(STDERR);
         }
 
-        if (!($stdin  = fopen($options['stdin'], 'r'))) {
+        $stdin  = fopen($options['stdin'], 'r');
+        if (!is_resource($stdin)) {
             throw new \Exception('failed to open STDIN ' . $options['stdin']);
         }
         if (!defined('DAEMON_STDIN')) {
             define('DAEMON_STDIN', $stdin);
         }
 
-        if (!($stdout = fopen($options['stdout'], 'w'))) {
+        $stdout = fopen($options['stdout'], 'w');
+        if (!is_resource($stdout)) {
             throw new \Exception('failed to open STDOUT ' . $options['stdout']);
         }
         if (!defined('DAEMON_STDOUT')) {
             define('DAEMON_STDOUT', $stdout);
         }
 
-        if (!($stderr = fopen($options['stderr'], 'w'))) {
+        $stderr = fopen($options['stderr'], 'w');
+        if (!is_resource($stderr)) {
             throw new \Exception('failed to open STDERR ' . $options['stderr']);
         }
         if (!defined('DAEMON_STDERR')) {
