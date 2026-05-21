@@ -61,50 +61,82 @@ class Daemon
                 return;
         }
 
-        if (-1 === posix_setsid()) {
-            throw new \Exception('failed to setsid');
-        }
+        $stderr = null;
+        try {
+            if (-1 === posix_setsid()) {
+                throw new \Exception('failed to setsid');
+            }
 
-        if (defined('STDIN') && 'resource' === gettype(STDIN)) {
-            fclose(STDIN);
-        }
-        if (defined('STDOUT') && 'resource' === gettype(STDOUT)) {
-            fclose(STDOUT);
-        }
-        if (defined('STDERR') && 'resource' === gettype(STDERR)) {
-            fclose(STDERR);
-        }
+            if (defined('STDIN') && 'resource' === gettype(STDIN)) {
+                fclose(STDIN);
+            }
+            if (defined('STDOUT') && 'resource' === gettype(STDOUT)) {
+                fclose(STDOUT);
+            }
+            if (defined('STDERR') && 'resource' === gettype(STDERR)) {
+                fclose(STDERR);
+            }
 
-        $stdin  = fopen($options['stdin'], 'r');
-        if (!is_resource($stdin)) {
-            throw new \Exception('failed to open STDIN ' . $options['stdin']);
-        }
-        if (!defined('DAEMON_STDIN')) {
-            define('DAEMON_STDIN', $stdin);
-        }
+            $stdin  = fopen($options['stdin'], 'r');
+            if (!is_resource($stdin)) {
+                throw new \Exception('failed to open STDIN ' . $options['stdin']);
+            }
+            if (!defined('DAEMON_STDIN')) {
+                define('DAEMON_STDIN', $stdin);
+            }
 
-        $stdout = fopen($options['stdout'], 'w');
-        if (!is_resource($stdout)) {
-            throw new \Exception('failed to open STDOUT ' . $options['stdout']);
-        }
-        if (!defined('DAEMON_STDOUT')) {
-            define('DAEMON_STDOUT', $stdout);
-        }
+            $stdout = fopen($options['stdout'], 'w');
+            if (!is_resource($stdout)) {
+                throw new \Exception('failed to open STDOUT ' . $options['stdout']);
+            }
+            if (!defined('DAEMON_STDOUT')) {
+                define('DAEMON_STDOUT', $stdout);
+            }
 
-        $stderr = fopen($options['stderr'], 'w');
-        if (!is_resource($stderr)) {
-            throw new \Exception('failed to open STDERR ' . $options['stderr']);
-        }
-        if (!defined('DAEMON_STDERR')) {
-            define('DAEMON_STDERR', $stderr);
-        }
+            $stderr = fopen($options['stderr'], 'w');
+            if (!is_resource($stderr)) {
+                throw new \Exception('failed to open STDERR ' . $options['stderr']);
+            }
+            if (!defined('DAEMON_STDERR')) {
+                define('DAEMON_STDERR', $stderr);
+            }
 
-        pcntl_signal(SIGTSTP, SIG_IGN);
-        pcntl_signal(SIGTTOU, SIG_IGN);
-        pcntl_signal(SIGTTIN, SIG_IGN);
-        pcntl_signal(SIGHUP, SIG_IGN);
+            pcntl_signal(SIGTSTP, SIG_IGN);
+            pcntl_signal(SIGTTOU, SIG_IGN);
+            pcntl_signal(SIGTTIN, SIG_IGN);
+            pcntl_signal(SIGHUP, SIG_IGN);
 
-        call_user_func($callable, $stdin, $stdout, $stderr);
+            call_user_func($callable, $stdin, $stdout, $stderr);
+        } catch (\Throwable $e) {
+            self::reportChildFailure($e, $stderr);
+            exit(1);
+        }
+    }
+
+    /**
+     * Report failures that happen after fork but before or during the callback.
+     *
+     * @param \Throwable $e
+     * @param mixed $stderr
+     *
+     * @return void
+     */
+    private static function reportChildFailure(\Throwable $e, $stderr = null): void
+    {
+        $pid = getmypid();
+        $message = sprintf(
+            '[daemon child%s] %s: %s in %s:%d',
+            false === $pid ? '' : ' ' . $pid,
+            get_class($e),
+            $e->getMessage(),
+            $e->getFile(),
+            $e->getLine(),
+        );
+
+        if (is_resource($stderr)) {
+            fwrite($stderr, $message . PHP_EOL);
+        }
+        error_log($message);
     }
 
     /**
