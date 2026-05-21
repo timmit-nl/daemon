@@ -67,13 +67,13 @@ class Daemon
                 throw new \Exception('failed to setsid');
             }
 
-            if (defined('STDIN') && 'resource' === gettype(STDIN)) {
+            if (defined('STDIN') && is_resource(STDIN)) {
                 fclose(STDIN);
             }
-            if (defined('STDOUT') && 'resource' === gettype(STDOUT)) {
+            if (defined('STDOUT') && is_resource(STDOUT)) {
                 fclose(STDOUT);
             }
-            if (defined('STDERR') && 'resource' === gettype(STDERR)) {
+            if (defined('STDERR') && is_resource(STDERR)) {
                 fclose(STDERR);
             }
 
@@ -125,12 +125,14 @@ class Daemon
     {
         $pid = getmypid();
         $message = sprintf(
-            '[daemon child%s] %s: %s in %s:%d',
+            '[daemon child%s] %s: %s in %s:%d%s%s',
             false === $pid ? '' : ' ' . $pid,
             get_class($e),
             $e->getMessage(),
             $e->getFile(),
             $e->getLine(),
+            PHP_EOL,
+            $e->getTraceAsString(),
         );
 
         if (is_resource($stderr)) {
