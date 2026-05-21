@@ -30,7 +30,6 @@
         "ext-posix": "*"
     },
 	"require-dev": {
-        "timmit/php-docblock-checker": "^1.11",
         "phpstan/phpstan": "^1.1",
         "phpstan/phpstan-strict-rules": "^1.0",
         "phpstan/phpstan-deprecation-rules":"^1.0"
