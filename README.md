@@ -1,120 +1,75 @@
-# Daemon
+# timmit/daemon
 
-Daemon class provides helpers for starting and killing daemonized processes.
+Helpers for starting and stopping a daemonized PHP process. This package is a fork of [clio](https://github.com/nramenta/clio), reduced to process control. Console input and color live in [timmit/console](https://github.com/timmit-nl/console).
 
-> Disclaimer: This package is forked version of [this](https://github.com/nramenta/clio).
-> Main goal of this fork/rewrite is provide a package responsible only for one thing.
-> If you are looking for console inputs, colors etc, see [CLIMate](http://climate.thephpleague.com/)
-> or Symfony console. 
+## Install
 
-## Installation
-
-The prefered way to install Daemon is through [composer][Composer]; the minimum
-composer.json configuration is:
-
-```
-{
-    "require": {
-        "timmit/daemon": "~1.0.0"
-    }
-}
+```bash
+composer require timmit/daemon
 ```
 
-PHP 5.4 is required. This library is developed on and is meant to be used on
-POSIX systems with the posix, pcntl, and sockets extensions loaded.
+Requires PHP >= 8.0, `ext-pcntl`, and `ext-posix`. It is meant for POSIX systems.
 
+## Daemon::isRunning(string $file): bool
 
-## Api
-
-### Daemon::isRunning($pid)
-
-Tests if a daemon is currently running or not. Returns true or false:
+Returns whether the process in a PID file is still running. The argument is the path of the PID file, not a process id. A missing file returns `false`.
 
 ```php
-<?php
 use TiMMiT\Daemon;
+
 if (Daemon::isRunning('/path/to/process.pid')) {
     echo "daemon is running.\n";
-} else {
-    echo "daemon is not running.\n";
 }
 ```
 
-### Daemon::work(array $options, callable $callable)
+## Daemon::work(array $options, callable $callable): void
 
-Daemon a `$callable` callable object. The `$options` key-value array must
-contain `pid` as the path to the PID file:
+Forks `$callable` into the background. `$options['pid']` is required and is the PID file path. `stdin` and `stdout` default to `/dev/null`. `stderr` defaults to `php://stdout`.
+
+In the child, the opened streams are also defined as `DAEMON_STDIN`, `DAEMON_STDOUT`, and `DAEMON_STDERR` when those constants do not exist yet. `timmit/console` reads those constants.
+
+A throwable from the child is written to the stderr stream and the error log. The child then exits with status 1.
 
 ```php
-<?php
 use TiMMiT\Daemon;
-if (Daemon::isRunning('/path/to/process.pid')) {
-    echo "daemon is already running.\n";
-} else {
-    Daemon::work(array(
-            'pid'    => '/path/to/process.pid', // required
-            'stdin'  => '/dev/null',            // defaults to /dev/null
-            'stdout' => '/path/to/stdout.txt',  // defaults to /dev/null
-            'stderr' => '/path/to/stderr.txt',  // defaults to php://stdout
-        ),
-        function($stdin, $stdout, $stderr) { // these parameters are optional
+
+if (!Daemon::isRunning('/path/to/process.pid')) {
+    Daemon::work(
+        [
+            'pid' => '/path/to/process.pid',
+            'stdin' => '/dev/null',
+            'stdout' => '/path/to/stdout.txt',
+            'stderr' => '/path/to/stderr.txt',
+        ],
+        function ($stdin, $stdout, $stderr): void {
             while (true) {
-                // do whatever it is daemons do
-                sleep(1); // sleep is good for you
+                sleep(1);
             }
         }
     );
-    echo "daemon is now running.\n";
 }
 ```
 
-The PID file is an ordinary text file with the process ID as its only content.
-It will be created by the library automatically if it doesn't exist. It is
-highly recommended to put a call to `sleep` to ease the system load.
+The parent writes the child process id into the PID file and returns. The three callback parameters are optional.
 
-### Daemon::kill($pid, $delete = false)
+## Daemon::kill(string $file, bool $delete = false, int $signal = SIGTERM): bool
 
-Kill a daemonized process:
+Sends `$signal` to the process id stored in the PID file. When `$delete` is `true`, the PID file is removed after the signal is sent. Throws when the file cannot be read or the process is not running.
 
 ```php
-<?php
 use TiMMiT\Daemon;
 
 if (Daemon::isRunning('/path/to/process.pid')) {
-    echo "killing running daemon ...\n";
-    if (Daemon::kill('/path/to/process.pid')) {
-        echo "daemon killed.\n";
-    } else {
-        echo "failed killing daemon.\n";
-    }
-} else {
-    echo "nothing to kill.\n";
+    Daemon::kill('/path/to/process.pid', true);
 }
 ```
 
-If the second parameter is set to `true`, this function will try to delete the
-PID file after successfully sending the process a kill signal. 
-
-## Acknowledgments
-
-The text color and style specifiers are taken entirely from PEAR's Console_Color
-class by Stefan Walk. The Daemon class is heavily inspired from Andy Thompson's
-blog post on [daemonizing a PHP CLI script on a POSIX system][post].
-
 ## License
 
-[MIT]
+MIT.
 
-## Credits 
+## Credits
 
-- Nofriandi Ramenta <nramenta@gmail.com>: autor of original source code (you 
-    can found it [here][clio])
-- oNeDaL <onedal@voodoo.technology>: autor of first fork source code (you 
-    can found it [here][onedal])
-
-[Composer]: http://getcomposer.org/
-[MIT]: http://en.wikipedia.org/wiki/MIT_License
-[post]: http://andytson.com/blog/2010/05/daemonising-a-php-cli-script-on-a-posix-system/
-[clio]: https://github.com/nramenta/clio
-[onedal]: https://github.com/1dal/Daemon
-
+- Nofriandi Ramenta, author of the original [clio](https://github.com/nramenta/clio) source
+- oNeDaL, author of the first fork
+- Tim Schoondergang
